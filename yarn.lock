@@ -3051,6 +3051,11 @@ got@^10.6.0:
     to-readable-stream "^2.0.0"
     type-fest "^0.10.0"
 
+gqless-hooks@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/gqless-hooks/-/gqless-hooks-0.1.1.tgz#12ac2c9cae69c4ae0d1022e4e2d0102c5236c363"
+  integrity sha512-nDfiMYgv3olp/XZFa6PgJRYhdYSoWsZBZUv9ojfYXz+Z8tdLN6YRNIZRqNBOLfTnNnghYVsUvsNuGahDtE2dYg==
+
 gqless@^0.0.1-alpha.28:
   version "0.0.1-alpha.28"
   resolved "https://registry.yarnpkg.com/gqless/-/gqless-0.0.1-alpha.28.tgz#99bf0d51346e320b21994df83c14418f9e9abae2"

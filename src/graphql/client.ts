@@ -1,7 +1,7 @@
 import { Client, QueryFetcher } from "gqless";
 
 import { Mutation, Query, schema } from "./generated";
-import { createUseMutation, createUseQuery } from "./hooks";
+import { createUseMutation, createUseQuery } from "gqless-hooks";
 
 const endpoint = "http://localhost:3000/api/graphql";
 
