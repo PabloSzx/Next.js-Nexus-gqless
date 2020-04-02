@@ -45,6 +45,22 @@ export const schema = {
       extension: ((extensions as any) || {}).Boolean
     });
   },
+  get Mutation() {
+    return new ObjectNode(
+      {
+        get mutateRandom() {
+          return new FieldNode(schema.Float, undefined, false);
+        }
+      },
+      { name: "Mutation", extension: ((extensions as any) || {}).Mutation }
+    );
+  },
+  get Float() {
+    return new ScalarNode({
+      name: "Float",
+      extension: ((extensions as any) || {}).Float
+    });
+  },
   get __Schema() {
     return new ObjectNode(
       {

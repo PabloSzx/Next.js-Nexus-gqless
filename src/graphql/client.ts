@@ -1,7 +1,8 @@
 import { Client, QueryFetcher } from "gqless";
-import { schema, Query } from "./generated";
 
-const endpoint = "http://localhost:3000/api/graphql";
+import { Query, schema } from "./generated";
+
+export const endpoint = "http://localhost:3000/api/graphql";
 
 const fetchQuery: QueryFetcher = async (query, variables) => {
   const response = await fetch(endpoint, {

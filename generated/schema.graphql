@@ -2,6 +2,10 @@
 ### Do not make changes to this file directly
 
 
+type Mutation {
+  mutateRandom: Float!
+}
+
 type Query {
   asd: Boolean!
   hello(name: String): String!

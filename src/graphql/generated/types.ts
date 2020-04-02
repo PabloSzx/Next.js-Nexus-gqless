@@ -41,6 +41,24 @@ type t_Boolean<T extends boolean = boolean> = ScalarType<
 >;
 
 /**
+ * @name Mutation
+ * @type OBJECT
+ */
+type t_Mutation = FieldsType<
+  {
+    __typename: t_String<"Mutation">;
+    mutateRandom: t_Float;
+  },
+  Extension<"Mutation">
+>;
+
+/**
+ * @name Float
+ * @type SCALAR
+ */
+type t_Float<T extends number = number> = ScalarType<T, Extension<"Float">>;
+
+/**
  * @name __Schema
  * @type OBJECT
  */
@@ -226,6 +244,18 @@ export type String = TypeData<t_String>;
  * @type SCALAR
  */
 export type Boolean = TypeData<t_Boolean>;
+
+/**
+ * @name Mutation
+ * @type OBJECT
+ */
+export type Mutation = TypeData<t_Mutation>;
+
+/**
+ * @name Float
+ * @type SCALAR
+ */
+export type Float = TypeData<t_Float>;
 
 /**
  * @name __Schema
