@@ -5,7 +5,11 @@ export const Mutation = extendType({
   definition(t) {
     t.float("mutateRandom", {
       resolve() {
-        return Math.random() * 100;
+        const n = Math.round(Math.random() * 100);
+        if (n < 50) {
+          throw new Error("n was less than 50");
+        }
+        return n;
       }
     });
   }

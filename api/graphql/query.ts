@@ -1,4 +1,12 @@
-import { extendType, stringArg } from "@nexus/schema";
+import { extendType, objectType, stringArg } from "@nexus/schema";
+
+export const HelloWorldObj = objectType({
+  name: "HelloWorldObj",
+  definition(t) {
+    t.id("id");
+    t.boolean("isOrNot");
+  }
+});
 
 export const Query = extendType({
   type: "Query",
@@ -10,6 +18,15 @@ export const Query = extendType({
           ctx
         });
         return `Hello ${name || "World"}!`;
+      }
+    });
+    t.field("obj", {
+      type: "HelloWorldObj",
+      resolve() {
+        return {
+          id: "zxc",
+          isOrNot: true
+        };
       }
     });
   }

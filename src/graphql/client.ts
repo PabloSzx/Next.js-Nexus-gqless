@@ -1,8 +1,9 @@
 import { Client, QueryFetcher } from "gqless";
 
-import { Query, schema } from "./generated";
+import { Mutation, Query, schema } from "./generated";
+import { createUseMutation, createUseQuery } from "./hooks";
 
-export const endpoint = "http://localhost:3000/api/graphql";
+const endpoint = "http://localhost:3000/api/graphql";
 
 const fetchQuery: QueryFetcher = async (query, variables) => {
   const response = await fetch(endpoint, {
@@ -29,3 +30,12 @@ const fetchQuery: QueryFetcher = async (query, variables) => {
 export const client = new Client<Query>(schema.Query, fetchQuery);
 
 export const query = client.query;
+
+export const useMutation = createUseMutation<Mutation>({
+  endpoint,
+  schema
+});
+export const useQuery = createUseQuery<Query>({
+  endpoint,
+  schema
+});

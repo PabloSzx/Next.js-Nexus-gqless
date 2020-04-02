@@ -20,6 +20,10 @@ export interface NexusGenEnums {
 }
 
 export interface NexusGenRootTypes {
+  HelloWorldObj: { // root type
+    id: string; // ID!
+    isOrNot: boolean; // Boolean!
+  }
   Mutation: {};
   Query: {};
   String: string;
@@ -33,12 +37,17 @@ export interface NexusGenAllTypes extends NexusGenRootTypes {
 }
 
 export interface NexusGenFieldTypes {
+  HelloWorldObj: { // field return type
+    id: string; // ID!
+    isOrNot: boolean; // Boolean!
+  }
   Mutation: { // field return type
     mutateRandom: number; // Float!
   }
   Query: { // field return type
     asd: boolean; // Boolean!
     hello: string; // String!
+    obj: NexusGenRootTypes['HelloWorldObj']; // HelloWorldObj!
   }
 }
 
@@ -55,7 +64,7 @@ export interface NexusGenAbstractResolveReturnTypes {
 
 export interface NexusGenInheritedFields {}
 
-export type NexusGenObjectNames = "Mutation" | "Query";
+export type NexusGenObjectNames = "HelloWorldObj" | "Mutation" | "Query";
 
 export type NexusGenInputNames = never;
 

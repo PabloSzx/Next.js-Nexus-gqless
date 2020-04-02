@@ -26,6 +26,9 @@ export const schema = {
             false
           );
         },
+        get obj() {
+          return new FieldNode(schema.HelloWorldObj, undefined, false);
+        },
         get asd() {
           return new FieldNode(schema.Boolean, undefined, false);
         }
@@ -37,6 +40,28 @@ export const schema = {
     return new ScalarNode({
       name: "String",
       extension: ((extensions as any) || {}).String
+    });
+  },
+  get HelloWorldObj() {
+    return new ObjectNode(
+      {
+        get id() {
+          return new FieldNode(schema.ID, undefined, false);
+        },
+        get isOrNot() {
+          return new FieldNode(schema.Boolean, undefined, false);
+        }
+      },
+      {
+        name: "HelloWorldObj",
+        extension: ((extensions as any) || {}).HelloWorldObj
+      }
+    );
+  },
+  get ID() {
+    return new ScalarNode({
+      name: "ID",
+      extension: ((extensions as any) || {}).ID
     });
   },
   get Boolean() {

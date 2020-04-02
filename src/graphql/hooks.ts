@@ -1,38 +1,83 @@
-import { Client, getAccessor, NetworkStatus, QueryFetcher } from "gqless";
+import { Client, ObjectNode, QueryFetcher } from "gqless";
+import { GraphQLError } from "graphql";
 import {
-  Dispatch,
-  SetStateAction,
+  Reducer,
   useCallback,
   useEffect,
   useMemo,
+  useReducer,
   useRef,
   useState,
 } from "react";
 
-import { endpoint } from "./client";
-import { Mutation, Query, schema } from "./generated";
+type IQueryFn<TData, Query> = (schema: Client<Query>["query"]) => TData;
 
-type IState = "waiting" | "loading" | "error" | "done";
+type IMutationFn<TData, Mutation> = (
+  schema: Client<Mutation>["query"]
+) => TData;
 
-type IQueryFn<TData> = (schema: Client<Query>["query"]) => TData;
+type IReducerState = {
+  state: "waiting" | "loading" | "error" | "done";
+  errors?: GraphQLError[];
+};
 
-export const useQuery = <TData extends any>(
-  queryFn: IQueryFn<TData>,
+const LazyInitialState: IReducerState = { state: "waiting" };
+const EarlyInitialState: IReducerState = { state: "loading" };
+
+const StateReducer = (
+  reducerState: IReducerState,
+  dispatch:
+    | { type: "loading" }
+    | { type: "done" }
+    | { type: "error"; payload: GraphQLError[] }
+): IReducerState => {
+  switch (dispatch.type) {
+    case "done":
+    case "loading": {
+      return {
+        state: dispatch.type
+      };
+    }
+    case "error": {
+      return {
+        errors: dispatch.payload,
+        state: "error"
+      };
+    }
+    default:
+      return reducerState;
+  }
+};
+
+export const createUseQuery = <
+  Query,
+  Schema extends { Query: ObjectNode } = { Query: ObjectNode }
+>({
+  endpoint,
+  schema
+}: {
+  endpoint: string;
+  schema: Schema;
+}) => <TData = unknown>(
+  queryFn: IQueryFn<TData, Query>,
   {
     lazy = false
   }: {
     lazy?: boolean;
   } = {}
 ): [
-  { state: IState; data: TData | undefined },
-  (queryFn?: IQueryFn<TData>) => Promise<TData>
+  IReducerState & { data: TData | null | undefined },
+  (queryFn?: IQueryFn<TData, Query>) => Promise<TData>
 ] => {
-  const [state, setState] = useState<IState>(lazy ? "waiting" : "loading");
-  const [data, setData] = useState<TData | undefined>(undefined);
+  const [data, setData] = useState<TData | null>();
+  const [state, dispatch] = useReducer(
+    StateReducer,
+    lazy ? LazyInitialState : EarlyInitialState
+  );
 
   const fetchQuery = useCallback<QueryFetcher>(
     async (query, variables) => {
-      setState("loading");
+      dispatch({ type: "loading" });
       const response = await fetch(endpoint, {
         method: "POST",
         headers: {
@@ -46,45 +91,73 @@ export const useQuery = <TData extends any>(
       });
 
       if (!response.ok) {
-        setState("error");
+        try {
+          const json = await response.json();
+
+          if (json?.errors) {
+            dispatch({
+              type: "error",
+              payload: json.errors
+            });
+          }
+        } catch (err) {
+          dispatch({
+            type: "error",
+            payload: []
+          });
+        }
+
         throw new Error(
           `Network error, received status code ${response.status}`
         );
       }
 
       const json = await response.json();
-      setState("done");
+
+      if (json?.errors) {
+        dispatch({
+          type: "error",
+          payload: []
+        });
+      } else {
+        dispatch({
+          type: "done"
+        });
+      }
 
       return json;
     },
-    [setState]
+    [dispatch]
   );
 
-  const queryClient = useMemo<Client<Query>>(
+  const initialQueryClient = useMemo(
     () => new Client<Query>(schema.Query, fetchQuery),
     [fetchQuery]
   );
 
+  const queryClient = useRef<Client<Query>>(initialQueryClient);
+
   const queryCallback = useCallback<
-    (queryFnArg?: IQueryFn<TData>) => Promise<TData>
+    (queryFnArg?: IQueryFn<TData, Query>) => Promise<TData>
   >(
     async queryFnArg => {
       const query = queryFnArg || queryFn;
-      const accessor = getAccessor(query(queryClient.query));
+      let client: Client<Query> = queryClient.current;
 
-      if (accessor.status === NetworkStatus.idle) {
-        accessor.scheduler.commit.stage(accessor);
+      query(client.query);
 
-        query(queryClient.query);
+      if (client.scheduler.commit.accessors.size === 0) {
+        client = new Client<Query>(schema.Query, fetchQuery);
+        queryClient.current = client;
+        query(client.query);
       }
 
       await new Promise(resolve => {
-        queryClient.scheduler.commit.onFetched(() => {
+        client.scheduler.commit.onFetched(() => {
           resolve();
         });
       });
-
-      const val = query(queryClient.query);
+      const val = query(client.query);
 
       setData(val);
 
@@ -105,28 +178,37 @@ export const useQuery = <TData extends any>(
     isMountedRef.current = true;
   }, [isMountedRef]);
 
-  return useMemo(() => [{ state, data }, queryCallback], [
+  return useMemo(() => [{ ...state, data }, queryCallback], [
     queryCallback,
     state,
     data
   ]);
 };
 
-type IMutationFn<TData> = (schema: Client<Mutation>["query"]) => TData;
-
-export const useMutation = <TData extends any>(
-  mutationFn: IMutationFn<TData>
+export const createUseMutation = <
+  Mutation,
+  Schema extends { Mutation: ObjectNode } = { Mutation: ObjectNode }
+>({
+  endpoint,
+  schema
+}: {
+  endpoint: string;
+  schema: Schema;
+}) => <TData = unknown>(
+  mutationFn: IMutationFn<TData, Mutation>
 ): [
-  (mutationFn?: IMutationFn<TData>) => Promise<TData>,
-  { state: IState; data: TData | undefined }
+  (mutationFn?: IMutationFn<TData, Mutation>) => Promise<TData>,
+  IReducerState & { data: TData | null | undefined }
 ] => {
-  const [state, setState] = useState<IState>("waiting");
+  const [state, dispatch] = useReducer(StateReducer, LazyInitialState);
 
-  const [data, setData] = useState<TData | undefined>(undefined);
+  const [data, setData] = useState<TData | undefined | null>();
 
   const fetchMutation = useCallback<QueryFetcher>(
     async (query, variables) => {
-      setState("loading");
+      dispatch({
+        type: "loading"
+      });
       const response = await fetch(endpoint, {
         method: "POST",
         headers: {
@@ -140,35 +222,56 @@ export const useMutation = <TData extends any>(
       });
 
       if (!response.ok) {
-        setState("error");
+        try {
+          const json = await response.json();
+
+          if (json?.errors) {
+            dispatch({
+              type: "error",
+              payload: json.errors
+            });
+          }
+        } catch (err) {
+          dispatch({
+            type: "error",
+            payload: []
+          });
+        }
         throw new Error(
           `Network error, received status code ${response.status}`
         );
       }
 
       const json = await response.json();
-      setState("done");
+
+      if (json?.errors) {
+        dispatch({
+          type: "error",
+          payload: json.errors
+        });
+      } else {
+        dispatch({
+          type: "done"
+        });
+      }
 
       return json;
     },
-    [setState]
+    [dispatch]
   );
-  const mutationClient = useMemo<Client<Mutation>>(() => {
-    return new Client<Mutation>(schema.Mutation, fetchMutation);
-  }, [fetchMutation]);
 
   const mutationCallback = useCallback<
-    (mutationFnArg?: IMutationFn<TData>) => Promise<TData>
+    (mutationFnArg?: IMutationFn<TData, Mutation>) => Promise<TData>
   >(
     async mutationFnArg => {
       const mutation = mutationFnArg || mutationFn;
-      const accessor = getAccessor(mutation(mutationClient.query));
 
-      if (accessor.status === NetworkStatus.idle) {
-        accessor.scheduler.commit.stage(accessor);
+      const mutationClient = new Client<Mutation>(
+        schema.Mutation,
+        fetchMutation
+      );
 
-        mutation(mutationClient.query);
-      }
+      mutation(mutationClient.query);
 
       await new Promise(resolve => {
         mutationClient.scheduler.commit.onFetched(() => {
@@ -182,12 +285,12 @@ export const useMutation = <TData extends any>(
 
       return val;
     },
-    [mutationClient, setData]
+    [setData, fetchMutation]
   );
 
-  return useMemo(() => [mutationCallback, { state, data }], [
-    mutationCallback,
+  return useMemo(() => [mutationCallback, { ...state, data }], [
     state,
-    data
+    data,
+    mutationCallback
   ]);
 };

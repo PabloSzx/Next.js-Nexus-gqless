@@ -2,18 +2,28 @@ import { NextPage } from "next";
 
 import { graphql } from "@gqless/react";
 
-import { query } from "../src/graphql";
-import { useMutation, useQuery } from "../src/graphql/hooks";
+import { query, useMutation, useQuery } from "../src/graphql";
 
 const Page: NextPage = () => {
   const [mutationHookCall, mutationHook] = useMutation(
     schema => schema.mutateRandom
   );
+
   const [queryHook, refetchQueryHook] = useQuery(
     schema =>
       schema.hello({
         name: "other"
       }),
+    {
+      lazy: false
+    }
+  );
+
+  const [complexQueryHook, refetchComplexQueryHook] = useQuery(
+    ({ obj: { id, isOrNot } }) => ({
+      id,
+      isOrNot
+    }),
     {
       lazy: true
     }
@@ -29,12 +39,40 @@ const Page: NextPage = () => {
 
       <p>query hook state {queryHook.state}</p>
       <p>query hook data {`${queryHook.data}`}</p>
+      <p>
+        query hook errors {`${queryHook.errors?.map(value => value.message)}`}
+      </p>
       <button
         onClick={() => {
-          refetchQueryHook();
+          const n = Math.round(Math.random() * 100).toString();
+          refetchQueryHook(schema =>
+            schema.hello({
+              name: "refetch" + n
+            })
+          );
         }}
       >
         refetch query hook
+      </button>
+      <br />
+
+      <br />
+
+      <p>complex query hook state {complexQueryHook.state}</p>
+      <p>
+        complex query hook data {`${JSON.stringify(complexQueryHook.data)}`}
+      </p>
+      <p>
+        complex query hook errors{" "}
+        {`${complexQueryHook.errors?.map(value => value.message)}`}
+      </p>
+
+      <button
+        onClick={() => {
+          refetchComplexQueryHook();
+        }}
+      >
+        refetch complex query hook
       </button>
 
       <br />
@@ -43,6 +81,10 @@ const Page: NextPage = () => {
 
       <p>mutation hook state {mutationHook.state}</p>
       <p>mutation hook data {`${mutationHook.data}`}</p>
+      <p>
+        mutation hook errors{" "}
+        {`${mutationHook.errors?.map(value => value.message)}`}
+      </p>
       <button
         onClick={() => {
           mutationHookCall();

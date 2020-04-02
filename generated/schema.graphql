@@ -2,6 +2,11 @@
 ### Do not make changes to this file directly
 
 
+type HelloWorldObj {
+  id: ID!
+  isOrNot: Boolean!
+}
+
 type Mutation {
   mutateRandom: Float!
 }
@@ -9,4 +14,5 @@ type Mutation {
 type Query {
   asd: Boolean!
   hello(name: String): String!
+  obj: HelloWorldObj!
 }

@@ -1,12 +1,14 @@
 //@ts-nocheck
-import * as extensions from "../extensions";
+
 import {
-  TypeData,
+  EnumType,
   FieldsType,
   FieldsTypeArg,
   ScalarType,
-  EnumType
+  TypeData,
 } from "gqless";
+
+import * as extensions from "../extensions";
 
 type Extension<TName extends string> = TName extends keyof typeof extensions
   ? typeof extensions[TName]
@@ -20,6 +22,7 @@ type t_Query = FieldsType<
   {
     __typename: t_String<"Query">;
     hello: FieldsTypeArg<{ name?: string | null }, t_String>;
+    obj: t_HelloWorldObj;
     asd: t_Boolean;
   },
   Extension<"Query">
@@ -30,6 +33,25 @@ type t_Query = FieldsType<
  * @type SCALAR
  */
 type t_String<T extends string = string> = ScalarType<T, Extension<"String">>;
+
+/**
+ * @name HelloWorldObj
+ * @type OBJECT
+ */
+type t_HelloWorldObj = FieldsType<
+  {
+    __typename: t_String<"HelloWorldObj">;
+    id: t_ID;
+    isOrNot: t_Boolean;
+  },
+  Extension<"HelloWorldObj">
+>;
+
+/**
+ * @name ID
+ * @type SCALAR
+ */
+type t_ID<T extends string = string> = ScalarType<T, Extension<"ID">>;
 
 /**
  * @name Boolean
@@ -238,6 +260,18 @@ export type Query = TypeData<t_Query>;
  * @type SCALAR
  */
 export type String = TypeData<t_String>;
+
+/**
+ * @name HelloWorldObj
+ * @type OBJECT
+ */
+export type HelloWorldObj = TypeData<t_HelloWorldObj>;
+
+/**
+ * @name ID
+ * @type SCALAR
+ */
+export type ID = TypeData<t_ID>;
 
 /**
  * @name Boolean
