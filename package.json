@@ -1,0 +1,43 @@
+{
+  "name": "next-nexus-gqless",
+  "version": "1.0.0",
+  "license": "MIT",
+  "author": "PabloSzx",
+  "main": "index.js",
+  "scripts": {
+    "build": "next build",
+    "dev": "next",
+    "generate": "gqless generate",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@gqless/react": "^0.0.1-alpha.28",
+    "@nexus/schema": "^0.13.1",
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "express-gql": "^0.0.4",
+    "fastify": "^2.13.0",
+    "fastify-gql": "^3.1.0",
+    "globby": "^11.0.0",
+    "gqless": "^0.0.1-alpha.28",
+    "graphql": "^14.6.0",
+    "graphql-playground-html": "^1.6.13",
+    "next": "^9.3.4",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "devDependencies": {
+    "@gqless/cli": "^0.0.1-alpha.30",
+    "@types/body-parser": "^1.19.0",
+    "@types/express": "^4.17.4",
+    "@types/node": "^13.9.8",
+    "@types/react": "^16.9.31",
+    "@types/react-dom": "^16.9.6",
+    "npm-run-all": "^4.1.5",
+    "typescript": "^3.8.3"
+  },
+  "gqless": {
+    "url": "http://localhost:3000/api/graphql",
+    "outputDir": "src/graphql"
+  }
+}
