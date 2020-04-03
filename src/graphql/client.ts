@@ -1,4 +1,4 @@
-import { Client, QueryFetcher } from "gqless";
+import { Client, QueryFetcher } from "@pablosz/gqless";
 
 import { Mutation, Query, schema } from "./generated";
 import { createUseMutation, createUseQuery } from "gqless-hooks";

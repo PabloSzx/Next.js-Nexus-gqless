@@ -8,7 +8,11 @@
     "build": "next build",
     "dev": "next",
     "generate": "gqless generate",
+    "postinstall": "patch-package",
     "start": "next start"
+  },
+  "resolutions": {
+    "graphql": "^15.0.0"
   },
   "dependencies": {
     "@gqless/react": "^0.0.1-alpha.28",
@@ -25,6 +29,7 @@
     "graphql": "^15.0.0",
     "graphql-playground-html": "^1.6.13",
     "next": "^9.3.4",
+    "patch-package": "^6.2.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },
@@ -41,8 +46,5 @@
   "@pablosz/gqless": {
     "url": "http://localhost:3000/api/graphql",
     "outputDir": "src/graphql"
-  },
-  "resolutions": {
-    "graphql": "^15.0.0"
   }
 }

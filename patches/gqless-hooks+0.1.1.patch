@@ -1,0 +1,20 @@
+diff --git a/node_modules/gqless-hooks/dist/gqless-hooks.esm.js b/node_modules/gqless-hooks/dist/gqless-hooks.esm.js
+index c9ec292..8d9aad0 100644
+--- a/node_modules/gqless-hooks/dist/gqless-hooks.esm.js
++++ b/node_modules/gqless-hooks/dist/gqless-hooks.esm.js
+@@ -1,4 +1,4 @@
+-import { Client } from 'gqless';
++import { Client } from '@pablosz/gqless';
+ import { useRef, useState, useReducer, useCallback, useMemo, useEffect } from 'react';
+ 
+ function _extends() {
+diff --git a/node_modules/gqless-hooks/dist/index.d.ts b/node_modules/gqless-hooks/dist/index.d.ts
+index 221f885..5d8dae8 100644
+--- a/node_modules/gqless-hooks/dist/index.d.ts
++++ b/node_modules/gqless-hooks/dist/index.d.ts
+@@ -1,4 +1,4 @@
+-import { Client, ObjectNode } from 'gqless';
++import { Client, ObjectNode } from '@pablosz/gqless';
+ import { GraphQLError } from 'graphql';
+ declare type IQueryFn<TData, Query> = (schema: Client<Query>['query']) => TData;
+ declare type IMutationFn<TData, Mutation> = (schema: Client<Mutation>['query']) => TData;
