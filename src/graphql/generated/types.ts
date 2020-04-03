@@ -1,14 +1,13 @@
 //@ts-nocheck
 
+import * as extensions from "../extensions";
 import {
-  EnumType,
+  TypeData,
   FieldsType,
   FieldsTypeArg,
   ScalarType,
-  TypeData,
+  EnumType,
 } from "gqless";
-
-import * as extensions from "../extensions";
 
 type Extension<TName extends string> = TName extends keyof typeof extensions
   ? typeof extensions[TName]

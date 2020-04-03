@@ -9,13 +9,13 @@ const fetchQuery: QueryFetcher = async (query, variables) => {
   const response = await fetch(endpoint, {
     method: "POST",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     },
     body: JSON.stringify({
       query,
-      variables
+      variables,
     }),
-    mode: "cors"
+    mode: "cors",
   });
 
   if (!response.ok) {
@@ -33,9 +33,9 @@ export const query = client.query;
 
 export const useMutation = createUseMutation<Mutation>({
   endpoint,
-  schema
+  schema,
 });
 export const useQuery = createUseQuery<Query>({
   endpoint,
-  schema
+  schema,
 });

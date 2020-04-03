@@ -1,31 +1,32 @@
 import { NextPage } from "next";
 
-import { graphql } from "@gqless/react";
-
 import { query, useMutation, useQuery } from "../src/graphql";
 
 const Page: NextPage = () => {
   const [mutationHookCall, mutationHook] = useMutation(
-    schema => schema.mutateRandom
+    (schema) => schema.mutateRandom
   );
+  const n = Math.round(Math.random() * 50);
 
   const [queryHook, refetchQueryHook] = useQuery(
-    schema =>
-      schema.hello({
-        name: "other"
-      }),
+    (schema) => {
+      return schema.hello({
+        name: "other" + n,
+      });
+    },
     {
-      lazy: false
+      lazy: false,
+      pollInterval: 2000,
     }
   );
 
   const [complexQueryHook, refetchComplexQueryHook] = useQuery(
     ({ obj: { id, isOrNot } }) => ({
       id,
-      isOrNot
+      isOrNot,
     }),
     {
-      lazy: true
+      lazy: true,
     }
   );
 
@@ -40,14 +41,14 @@ const Page: NextPage = () => {
       <p>query hook state {queryHook.state}</p>
       <p>query hook data {`${queryHook.data}`}</p>
       <p>
-        query hook errors {`${queryHook.errors?.map(value => value.message)}`}
+        query hook errors {`${queryHook.errors?.map((value) => value.message)}`}
       </p>
       <button
         onClick={() => {
           const n = Math.round(Math.random() * 100).toString();
-          refetchQueryHook(schema =>
+          refetchQueryHook((schema) =>
             schema.hello({
-              name: "refetch" + n
+              name: "refetch" + n,
             })
           );
         }}
@@ -64,7 +65,7 @@ const Page: NextPage = () => {
       </p>
       <p>
         complex query hook errors{" "}
-        {`${complexQueryHook.errors?.map(value => value.message)}`}
+        {`${complexQueryHook.errors?.map((value) => value.message)}`}
       </p>
 
       <button
@@ -83,7 +84,7 @@ const Page: NextPage = () => {
       <p>mutation hook data {`${mutationHook.data}`}</p>
       <p>
         mutation hook errors{" "}
-        {`${mutationHook.errors?.map(value => value.message)}`}
+        {`${mutationHook.errors?.map((value) => value.message)}`}
       </p>
       <button
         onClick={() => {
@@ -96,4 +97,4 @@ const Page: NextPage = () => {
   );
 };
 
-export default graphql(Page);
+export default Page;
