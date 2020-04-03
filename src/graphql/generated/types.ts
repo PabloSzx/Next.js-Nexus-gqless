@@ -1,38 +1,15 @@
-//@ts-nocheck
-
-import {
-  EnumType,
-  FieldsType,
-  FieldsTypeArg,
-  ScalarType,
-  TypeData,
-} from "gqless";
-
 import * as extensions from "../extensions";
+import {
+  TypeData,
+  FieldsType,
+  ScalarType,
+  FieldsTypeArg,
+  EnumType
+} from "@pablosz/gqless";
 
 type Extension<TName extends string> = TName extends keyof typeof extensions
   ? typeof extensions[TName]
   : any;
-
-/**
- * @name Query
- * @type OBJECT
- */
-type t_Query = FieldsType<
-  {
-    __typename: t_String<"Query">;
-    hello: FieldsTypeArg<{ name?: string | null }, t_String>;
-    obj: t_HelloWorldObj;
-    asd: t_Boolean;
-  },
-  Extension<"Query">
->;
-
-/**
- * @name String
- * @type SCALAR
- */
-type t_String<T extends string = string> = ScalarType<T, Extension<"String">>;
 
 /**
  * @name HelloWorldObj
@@ -63,6 +40,26 @@ type t_Boolean<T extends boolean = boolean> = ScalarType<
 >;
 
 /**
+ * @name Query
+ * @type OBJECT
+ */
+type t_Query = FieldsType<
+  {
+    __typename: t_String<"Query">;
+    hello: FieldsTypeArg<{ name?: string | undefined | null }, t_String>;
+    obj: t_HelloWorldObj;
+    asd: t_Boolean;
+  },
+  Extension<"Query">
+>;
+
+/**
+ * @name String
+ * @type SCALAR
+ */
+type t_String<T extends string = string> = ScalarType<T, Extension<"String">>;
+
+/**
  * @name Mutation
  * @type OBJECT
  */
@@ -87,6 +84,7 @@ type t_Float<T extends number = number> = ScalarType<T, Extension<"Float">>;
 type t___Schema = FieldsType<
   {
     __typename: t_String<"__Schema">;
+    description?: t_String | undefined | null;
 
     /**
      * A list of all types supported by this server.
@@ -101,12 +99,12 @@ type t___Schema = FieldsType<
     /**
      * If this server supports mutation, the type that mutation operations will be rooted at.
      */
-    mutationType?: t___Type | null;
+    mutationType?: t___Type | undefined | null;
 
     /**
      * If this server support subscription, the type that subscription operations will be rooted at.
      */
-    subscriptionType?: t___Type | null;
+    subscriptionType?: t___Type | undefined | null;
 
     /**
      * A list of all directives supported by this server.
@@ -124,20 +122,20 @@ type t___Type = FieldsType<
   {
     __typename: t_String<"__Type">;
     kind: t___TypeKind;
-    name?: t_String | null;
-    description?: t_String | null;
+    name?: t_String | undefined | null;
+    description?: t_String | undefined | null;
     fields?: FieldsTypeArg<
-      { includeDeprecated?: boolean | null },
-      t___Field[] | null
+      { includeDeprecated?: boolean | undefined | null },
+      t___Field[] | undefined | null
     >;
-    interfaces?: t___Type[] | null;
-    possibleTypes?: t___Type[] | null;
+    interfaces?: t___Type[] | undefined | null;
+    possibleTypes?: t___Type[] | undefined | null;
     enumValues?: FieldsTypeArg<
-      { includeDeprecated?: boolean | null },
-      t___EnumValue[] | null
+      { includeDeprecated?: boolean | undefined | null },
+      t___EnumValue[] | undefined | null
     >;
-    inputFields?: t___InputValue[] | null;
-    ofType?: t___Type | null;
+    inputFields?: t___InputValue[] | undefined | null;
+    ofType?: t___Type | undefined | null;
   },
   Extension<"__Type">
 >;
@@ -165,11 +163,11 @@ type t___Field = FieldsType<
   {
     __typename: t_String<"__Field">;
     name: t_String;
-    description?: t_String | null;
+    description?: t_String | undefined | null;
     args: t___InputValue[];
     type: t___Type;
     isDeprecated: t_Boolean;
-    deprecationReason?: t_String | null;
+    deprecationReason?: t_String | undefined | null;
   },
   Extension<"__Field">
 >;
@@ -182,13 +180,13 @@ type t___InputValue = FieldsType<
   {
     __typename: t_String<"__InputValue">;
     name: t_String;
-    description?: t_String | null;
+    description?: t_String | undefined | null;
     type: t___Type;
 
     /**
      * A GraphQL-formatted string representing the default value for this input value.
      */
-    defaultValue?: t_String | null;
+    defaultValue?: t_String | undefined | null;
   },
   Extension<"__InputValue">
 >;
@@ -201,9 +199,9 @@ type t___EnumValue = FieldsType<
   {
     __typename: t_String<"__EnumValue">;
     name: t_String;
-    description?: t_String | null;
+    description?: t_String | undefined | null;
     isDeprecated: t_Boolean;
-    deprecationReason?: t_String | null;
+    deprecationReason?: t_String | undefined | null;
   },
   Extension<"__EnumValue">
 >;
@@ -216,7 +214,8 @@ type t___Directive = FieldsType<
   {
     __typename: t_String<"__Directive">;
     name: t_String;
-    description?: t_String | null;
+    description?: t_String | undefined | null;
+    isRepeatable: t_Boolean;
     locations: t___DirectiveLocation[];
     args: t___InputValue[];
   },
@@ -250,18 +249,6 @@ type t___DirectiveLocation = EnumType<
 >;
 
 /**
- * @name Query
- * @type OBJECT
- */
-export type Query = TypeData<t_Query>;
-
-/**
- * @name String
- * @type SCALAR
- */
-export type String = TypeData<t_String>;
-
-/**
  * @name HelloWorldObj
  * @type OBJECT
  */
@@ -278,6 +265,18 @@ export type ID = TypeData<t_ID>;
  * @type SCALAR
  */
 export type Boolean = TypeData<t_Boolean>;
+
+/**
+ * @name Query
+ * @type OBJECT
+ */
+export type Query = TypeData<t_Query>;
+
+/**
+ * @name String
+ * @type SCALAR
+ */
+export type String = TypeData<t_String>;
 
 /**
  * @name Mutation

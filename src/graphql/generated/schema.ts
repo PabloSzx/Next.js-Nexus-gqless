@@ -5,13 +5,41 @@ import {
   ObjectNode,
   FieldNode,
   ArrayNode,
+  ScalarNode,
   Arguments,
   ArgumentsField,
-  ScalarNode,
   EnumNode
-} from "gqless";
+} from "@pablosz/gqless";
 
 export const schema = {
+  get HelloWorldObj() {
+    return new ObjectNode(
+      {
+        get id() {
+          return new FieldNode(schema.ID, undefined, false);
+        },
+        get isOrNot() {
+          return new FieldNode(schema.Boolean, undefined, false);
+        }
+      },
+      {
+        name: "HelloWorldObj",
+        extension: ((extensions as any) || {}).HelloWorldObj
+      }
+    );
+  },
+  get ID() {
+    return new ScalarNode({
+      name: "ID",
+      extension: ((extensions as any) || {}).ID
+    });
+  },
+  get Boolean() {
+    return new ScalarNode({
+      name: "Boolean",
+      extension: ((extensions as any) || {}).Boolean
+    });
+  },
   get Query() {
     return new ObjectNode(
       {
@@ -42,34 +70,6 @@ export const schema = {
       extension: ((extensions as any) || {}).String
     });
   },
-  get HelloWorldObj() {
-    return new ObjectNode(
-      {
-        get id() {
-          return new FieldNode(schema.ID, undefined, false);
-        },
-        get isOrNot() {
-          return new FieldNode(schema.Boolean, undefined, false);
-        }
-      },
-      {
-        name: "HelloWorldObj",
-        extension: ((extensions as any) || {}).HelloWorldObj
-      }
-    );
-  },
-  get ID() {
-    return new ScalarNode({
-      name: "ID",
-      extension: ((extensions as any) || {}).ID
-    });
-  },
-  get Boolean() {
-    return new ScalarNode({
-      name: "Boolean",
-      extension: ((extensions as any) || {}).Boolean
-    });
-  },
   get Mutation() {
     return new ObjectNode(
       {
@@ -89,6 +89,9 @@ export const schema = {
   get __Schema() {
     return new ObjectNode(
       {
+        get description() {
+          return new FieldNode(schema.String, undefined, true);
+        },
         get types() {
           return new FieldNode(
             new ArrayNode(schema.__Type, false),
@@ -262,6 +265,9 @@ export const schema = {
         },
         get description() {
           return new FieldNode(schema.String, undefined, true);
+        },
+        get isRepeatable() {
+          return new FieldNode(schema.Boolean, undefined, false);
         },
         get locations() {
           return new FieldNode(

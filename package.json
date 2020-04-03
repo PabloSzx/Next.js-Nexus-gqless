@@ -13,6 +13,7 @@
   "dependencies": {
     "@gqless/react": "^0.0.1-alpha.28",
     "@nexus/schema": "^0.13.1",
+    "@pablosz/gqless": "^0.0.3",
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "express-gql": "^0.0.4",
@@ -21,24 +22,27 @@
     "globby": "^11.0.0",
     "gqless": "^0.0.1-alpha.28",
     "gqless-hooks": "^0.1.1",
-    "graphql": "^14.6.0",
+    "graphql": "^15.0.0",
     "graphql-playground-html": "^1.6.13",
     "next": "^9.3.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
   },
   "devDependencies": {
-    "@gqless/cli": "^0.0.1-alpha.30",
+    "@pablosz/gqless-cli": "^0.0.10",
     "@types/body-parser": "^1.19.0",
     "@types/express": "^4.17.4",
-    "@types/node": "^13.9.8",
-    "@types/react": "^16.9.31",
+    "@types/node": "^13.11.0",
+    "@types/react": "^16.9.32",
     "@types/react-dom": "^16.9.6",
     "npm-run-all": "^4.1.5",
     "typescript": "^3.8.3"
   },
-  "gqless": {
+  "@pablosz/gqless": {
     "url": "http://localhost:3000/api/graphql",
     "outputDir": "src/graphql"
+  },
+  "resolutions": {
+    "graphql": "^15.0.0"
   }
 }
