@@ -22,7 +22,7 @@
     "gqless": "^0.0.1-alpha.28",
     "gqless-hooks": "^0.1.7",
     "graphql": "^14.6.0",
-    "graphql-playground-html": "^1.6.13",
+    "graphql-playground-html": "^1.6.22",
     "next": "^9.3.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1"
